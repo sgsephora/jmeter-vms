@@ -160,3 +160,26 @@ If the master cannot connect to the slave:
 2. Check JMeter server on the slave: `systemctl status jmeter-server`
 3. Verify network connectivity: `ping [SLAVE_PRIVATE_IP]`
 4. Check the JMeter properties file on the master
+
+
+
+
+
+------
+It looks like you're encountering an issue with the rmi_keystore.jks file when setting up JMeter in a master-slave configuration. This error typically occurs because JMeter cannot find the rmi_keystore.jks file, which is required for secure communication between the master and slave nodes.
+
+Here are the steps to resolve this issue:
+
+Generate the rmi_keystore.jks file:
+
+JMeter comes with a script to generate this keystore file. You can find the script in the bin directory of your JMeter installation.
+For Windows, use create-rmi-keystore.bat.
+For Unix-like systems, use create-rmi-keystore.sh.
+Copy the rmi_keystore.jks file: to bin directory
+
+
+/home/jmeteradmin/apache-jmeter/apache-jmeter-5.6.3/bin
+
+If you prefer to disable SSL for RMI communication, you can set the following property in the jmeter.properties file:
+server.rmi.ssl.disable=true
+By following these steps, you should be able to resolve the FileNotFoundExc

@@ -168,7 +168,6 @@ resource "azurerm_linux_virtual_machine" "master" {
   custom_data = base64encode(<<-EOT
     #!/bin/bash
     apt-get update
-    apt-get install -y openjdk-11-jdk wget unzip
     
     apt-get install -y \
       ca-certificates \
@@ -341,14 +340,13 @@ resource "azurerm_linux_virtual_machine" "slave" {
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
-
+  
   source_image_reference {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-gen2"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
     version   = "latest"
   }
-
   custom_data = base64encode(<<-EOT
     #!/bin/bash
     apt-get update
@@ -367,27 +365,6 @@ resource "azurerm_linux_virtual_machine" "slave" {
     # Configure JMeter server
     PRIVATE_IP=$(hostname -I | awk '{print $1}')
     sed -i "s/#RMI_HOST_DEF=-Djava.rmi.server.hostname=\$(hostname -f)/RMI_HOST_DEF=-Djava.rmi.server.hostname=$PRIVATE_IP/" /home/${var.username}/apache-jmeter/apache-jmeter-5.6.3/bin/jmeter-server
-    
-    # Setup JMeter server to start automatically
-    cat > /etc/systemd/system/jmeter-server.service << EOF
-    [Unit]
-    Description=JMeter Server
-    After=network.target
-    
-    [Service]
-    Type=simple
-    User=${var.username}
-    ExecStart=/home/${var.username}/apache-jmeter/apache-jmeter-5.6.3/bin/jmeter-server
-    WorkingDirectory=/home/${var.username}/apache-jmeter/apache-jmeter-5.6.3/bin
-    Restart=always
-    
-    [Install]
-    WantedBy=multi-user.target
-    EOF
-    
-    systemctl daemon-reload
-    systemctl enable jmeter-server
-    systemctl start jmeter-server
   EOT
   )
 

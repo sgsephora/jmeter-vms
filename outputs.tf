@@ -41,11 +41,21 @@ To connect to the master node:
 To upload your own test plan to the master:
   scp your-test-plan.jmx ${var.username}@${azurerm_public_ip.master_pip.ip_address}:/home/${var.username}/
 
+
+Copy rmi_kestore.jks file 
+
+scp rmi_keystore.jks ${var.username}@${azurerm_public_ip.master_pip.ip_address}:/home/${var.username}/apache-jmeter/apache-jmeter-5.6.3/bin
+scp rmi_keystore.jks ${var.username}@${azurerm_public_ip.slave_pip.ip_address}:/home/${var.username}/apache-jmeter/apache-jmeter-5.6.3/bin
+
+Disable ssl for RMI
+server.rmi.ssl.disable=true
+
+
 To run a test:
   ${var.username}@${azurerm_linux_virtual_machine.master.name}:~$ cd $JMETER_HOME/bin
   ${var.username}@${azurerm_linux_virtual_machine.master.name}:~$ ./jmeter -n -t /home/${var.username}/sample_test.jmx -R${azurerm_network_interface.slave_nic.private_ip_address} -l results.jtl -e -o report_folder
 
 To download test results:
-  scp -r ${var.username}@${azurerm_public_ip.master_pip.ip_address}:/home/${var.username}/apache-jmeter/apache-jmeter-5.6.2/bin/report_folder ./
+  scp -r ${var.username}@${azurerm_public_ip.master_pip.ip_address}:/home/${var.username}/apache-jmeter/apache-jmeter-5.6.3/bin/report_folder ./
 EOT
 }

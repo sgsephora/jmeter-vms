@@ -1,11 +1,11 @@
 Outputs:
 
-jmeter_run_command = "cd $JMETER_HOME/bin && ./jmeter -n -t /home/jmeteradmin/sample_test.jmx -R10.0.1.4 -l results.jtl -e -o report_folder"
+jmeter_run_command = "cd $JMETER_HOME/bin && ./jmeter -n -t /home/jmeteradmin/sample_test.jmx -R10.0.1.5 -l results.jtl -e -o report_folder"
 master_vm = {
   "name" = "vm-master-jmeter-mongodb-test"
-  "private_ip" = "10.0.1.5"
-  "public_ip" = "20.169.211.141"
-  "ssh" = "ssh jmeteradmin@20.169.211.141"
+  "private_ip" = "10.0.1.4"
+  "public_ip" = "172.178.51.236"
+  "ssh" = "ssh jmeteradmin@172.178.51.236"
 }
 resource_group = "rg-jmeter-mongodb-test"
 setup_instructions = <<EOT
@@ -14,26 +14,36 @@ JMeter Distributed Testing Environment Setup
 ==============================================
 
 Your JMeter environment has been deployed with:
-- 1 Master node (controller): vm-master-jmeter-mongodb-test (20.169.211.141)
-- 1 Slave node (load generator): vm-slave-jmeter-mongodb-test (172.190.218.67)
+- 1 Master node (controller): vm-master-jmeter-mongodb-test (172.178.51.236)
+- 1 Slave node (load generator): vm-slave-jmeter-mongodb-test (172.178.17.185)
 
 To connect to the master node:
-  ssh jmeteradmin@20.169.211.141
+  ssh jmeteradmin@172.178.51.236
 
 To upload your own test plan to the master:
-  scp your-test-plan.jmx jmeteradmin@20.169.211.141:/home/jmeteradmin/
+  scp your-test-plan.jmx jmeteradmin@172.178.51.236:/home/jmeteradmin/
+
+
+Copy rmi_kestore.jks file 
+
+scp rmi_keystore.jks jmeteradmin@172.178.51.236:/home/jmeteradmin/apache-jmeter/apache-jmeter-5.6.3/bin
+scp rmi_keystore.jks jmeteradmin@172.178.17.185:/home/jmeteradmin/apache-jmeter/apache-jmeter-5.6.3/bin
+
+Disable ssl for RMI
+server.rmi.ssl.disable=true
+
 
 To run a test:
   jmeteradmin@vm-master-jmeter-mongodb-test:~$ cd $JMETER_HOME/bin
-  jmeteradmin@vm-master-jmeter-mongodb-test:~$ ./jmeter -n -t /home/jmeteradmin/sample_test.jmx -R10.0.1.4 -l results.jtl -e -o report_folder
+  jmeteradmin@vm-master-jmeter-mongodb-test:~$ ./jmeter -n -t /home/jmeteradmin/sample_test.jmx -R10.0.1.5 -l results.jtl -e -o report_folder
 
 To download test results:
-  scp -r jmeteradmin@20.169.211.141:/home/jmeteradmin/apache-jmeter/apache-jmeter-5.6.2/bin/report_folder ./
+  scp -r jmeteradmin@172.178.51.236:/home/jmeteradmin/apache-jmeter/apache-jmeter-5.6.3/bin/report_folder ./
 
 EOT
 slave_vm = {
   "name" = "vm-slave-jmeter-mongodb-test"
-  "private_ip" = "10.0.1.4"
-  "public_ip" = "172.190.218.67"
-  "ssh" = "ssh jmeteradmin@172.190.218.67"
+  "private_ip" = "10.0.1.5"
+  "public_ip" = "172.178.17.185"
+  "ssh" = "ssh jmeteradmin@172.178.17.185"
 }
